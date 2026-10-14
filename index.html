@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Enabler-S | Enabling Nations and Enterprises to Grow</title>
+  <meta name="description" content="Enabler-S FZE LLC is a Dubai-based global advisory and business execution firm: company setup, finance and tax, legal, HR and immigration, technology, real estate, branding and trade across 85 markets.">
+  <meta property="og:title" content="Enabler-S | Enabling Nations and Enterprises to Grow">
+  <meta property="og:description" content="Strategy and execution for setting up, managing and scaling across international markets.">
+  <meta name="theme-color" content="#0b1522">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/logo-mark.png">
+  <meta property="og:image" content="enablers-logo.jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header" id="top">
+    <a class="logo" href="#top" aria-label="Enabler-S home">
+      <img src="assets/logo-mark.png" alt="" width="408" height="512">
+      <span>Enabler<b>-S</b></span>
+    </a>
+    <nav aria-label="Main">
+      <button class="menu-toggle" aria-expanded="false" aria-controls="menu">Menu</button>
+      <ul id="menu">
+        <li><a href="#services">Services</a></li>
+        <li><a href="#approach">Approach</a></li>
+        <li><a href="#coverage">Coverage</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a class="btn btn-gold btn-sm" href="#contact">Book a consultation</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- 3D journey: the walker passes the 8 service pillars as the visitor scrolls -->
+    <section class="journey" id="journey" aria-label="The Enabler-S journey through our eight service pillars">
+      <div class="journey-sticky">
+        <canvas id="scene" aria-hidden="true"></canvas>
+        <div class="vignette" aria-hidden="true"></div>
+
+        <div class="intro" id="intro">
+          <p class="eyebrow">Enabler-S FZE LLC · Dubai</p>
+          <h1>Enabling nations and enterprises <em>to grow</em></h1>
+          <p class="lede">A global advisory and business execution firm. We help enterprises, investors and institutions set up, manage and scale across international markets, from strategy through execution.</p>
+          <div class="intro-actions">
+            <button class="btn btn-gold" id="walk-btn" type="button">Take the walk</button>
+            <a class="btn btn-ghost" href="#contact">Book a consultation</a>
+          </div>
+          <p class="scroll-hint" aria-hidden="true"><span></span>Scroll to walk through our eight pillars</p>
+        </div>
+
+        <div class="stops" id="stops"></div>
+
+        <div class="outro" id="outro">
+          <p class="eyebrow">Advisory. Execution. Impact.</p>
+          <h2>One partner. <em>Endless possibilities.</em></h2>
+          <div class="outro-actions">
+            <a class="btn btn-gold" href="#contact">Book a consultation</a>
+            <button class="btn btn-ghost" id="restart-btn" type="button"><span aria-hidden="true">↺</span> Restart the journey</button>
+            <a class="btn btn-ghost" href="#services">Explore all services</a>
+          </div>
+        </div>
+
+        <div class="fade" id="fade" aria-hidden="true"></div>
+
+        <button class="btn btn-gold btn-sm stop-cta" id="stop-cta" type="button" hidden>View details</button>
+
+        <div class="rail" id="rail" aria-label="Jump to a pillar">
+          <div class="rail-track"><div class="rail-fill" id="rail-fill"></div></div>
+          <ol id="rail-dots"></ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="section welcome" id="about">
+      <div class="wrap two-col">
+        <div>
+          <p class="eyebrow">Hello and welcome</p>
+          <h2>Strategy and execution, <em>under one roof</em></h2>
+        </div>
+        <div class="prose">
+          <p>Enabler-S FZE LLC is a global advisory and business execution firm supporting enterprises, investors and institutions in establishing, managing and scaling operations across international markets, from the Americas to key hubs in Europe, Africa, Asia and the Middle East.</p>
+          <p>By combining strategic insight with regulatory, operational, financial, technology and trade expertise, we simplify complex business environments and enable sustainable growth and long-term success.</p>
+          <figure class="founder">
+            <div class="founder-mark" aria-hidden="true">R</div>
+            <figcaption>
+              <p>For more than two decades, <b>Dr. Ravi</b> has advised governments and global corporations on critical 21st-century challenges, shaping national strategies across energy, infrastructure, food security, health and technology. Through initiatives such as the Public-Private Alliance, he has mobilised billions in investment.</p>
+              <p class="muted">Recognising the need for both strategic advice and seamless execution, Dr. Ravi founded Enabler-S to drive global growth through expert guidance and measurable results.</p>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section why" id="why">
+      <div class="wrap">
+        <p class="eyebrow">Why Enabler-S matters today</p>
+        <h2>Growth across borders is hard. <em>We make it one conversation.</em></h2>
+        <div class="why-grid">
+          <div><h3 class="col-label">The challenge</h3><ul class="cards" id="challenges"></ul></div>
+          <div><h3 class="col-label">Our answer</h3><ul class="cards cards-gold" id="solutions"></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section services" id="services">
+      <div class="wrap">
+        <p class="eyebrow">Our Solutions Suite</p>
+        <h2>Eight pillars. <em>One extended business partner.</em></h2>
+        <div class="pillars" id="pillars"></div>
+        <aside class="premium">
+          <p class="eyebrow">Premium service access</p>
+          <ul id="premium"></ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section approach" id="approach">
+      <div class="wrap">
+        <p class="eyebrow">5-step approach</p>
+        <h2>Seamless global execution</h2>
+        <ol class="steps" id="steps"></ol>
+      </div>
+    </section>
+
+    <section class="section clients" id="clients">
+      <div class="wrap">
+        <p class="eyebrow">Clients & partners</p>
+        <h2>Who we work with</h2>
+        <ul class="chips" id="client-list"></ul>
+      </div>
+    </section>
+
+    <section class="section coverage" id="coverage">
+      <div class="wrap">
+        <p class="eyebrow">Global coverage. Local compliance.</p>
+        <h2><span class="big-num" id="country-count">85</span> markets, <em>one partner</em></h2>
+        <div class="regions" id="regions"></div>
+      </div>
+    </section>
+
+    <section class="section values" id="values">
+      <div class="wrap">
+        <div class="vm">
+          <div><p class="eyebrow">Our vision</p><p class="statement">To be a leading global business enablement partner empowering organisations to establish, operate and expand across borders with confidence.</p></div>
+          <div><p class="eyebrow">Our mission</p><p class="statement">To deliver integrated advisory and execution across strategy, finance, compliance, technology, infrastructure, workforce and trade, supporting every stage of global business growth.</p></div>
+        </div>
+        <h3 class="col-label">Core values</h3>
+        <ul class="value-grid" id="value-list"></ul>
+      </div>
+    </section>
+
+    <section class="section ecosystem" id="ecosystem">
+      <div class="wrap">
+        <p class="eyebrow">Our integrated ecosystem</p>
+        <h2>Driving growth, powering momentum, <em>delivering impact</em></h2>
+        <ul class="eco" id="eco-list"></ul>
+      </div>
+    </section>
+
+    <section class="section contact" id="contact">
+      <div class="wrap two-col">
+        <div>
+          <p class="eyebrow">Get in touch</p>
+          <h2>Where strategy <em>meets execution</em></h2>
+          <dl class="contact-list">
+            <div><dt>Office</dt><dd id="c-address"></dd></div>
+            <div><dt>Email</dt><dd><a id="c-email"></a></dd></div>
+            <div><dt>Phone</dt><dd><a id="c-phone"></a></dd></div>
+          </dl>
+        </div>
+        <form class="lead-form" id="lead-form" novalidate>
+          <div class="field"><label for="f-name">Full name</label><input id="f-name" name="name" autocomplete="name" required></div>
+          <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
+          <div class="field-row">
+            <div class="field"><label for="f-phone">Phone / WhatsApp</label><input id="f-phone" name="phone" autocomplete="tel"></div>
+            <div class="field"><label for="f-country">Country</label><input id="f-country" name="country" autocomplete="country-name"></div>
+          </div>
+          <div class="field"><label for="f-company">Company</label><input id="f-company" name="company" autocomplete="organization"></div>
+          <div class="field"><label for="f-message">How can we help?</label><textarea id="f-message" name="message" rows="4" required placeholder="e.g. Set up a trading company in Dubai with 3 visas"></textarea></div>
+          <button class="btn btn-gold" type="submit">Send enquiry</button>
+          <p class="form-status" id="form-status" role="status"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="pillar-dialog" id="pillar-dialog" aria-labelledby="pd-title">
+    <form method="dialog" class="pd-close-form"><button class="pd-close" aria-label="Close">×</button></form>
+    <p class="stop-num" id="pd-num"></p>
+    <h2 id="pd-title"></h2>
+    <p class="line" id="pd-line"></p>
+    <ul class="pd-services" id="pd-services"></ul>
+    <div class="pd-actions">
+      <a class="btn btn-gold" id="pd-book" href="#contact">Book a consultation about this</a>
+      <button class="btn btn-ghost" id="pd-next" type="button">Next pillar →</button>
+    </div>
+  </dialog>
+
+  <footer class="site-footer">
+    <div class="wrap footer-row">
+      <img class="footer-logo" src="assets/logo-wordmark.png" alt="Enabler-S" width="940" height="240">
+      <p><b>Enabler-S FZE LLC</b> · Enabling Nations and Enterprises to Grow</p>
+      <p class="muted">Where systems enable scale. Where strategy meets execution. Where vision turns sustainable.</p>
+      <p class="muted">© <span id="year"></span> Enabler-S. All rights reserved.</p>
+    </div>
+  </footer>
+  <noscript><style>.journey{height:auto}.journey-sticky{position:relative;height:auto;padding:120px 20px 40px}#scene,.rail,.outro{display:none}.intro{position:relative;opacity:1}</style></noscript>
+</body>
+</html>
