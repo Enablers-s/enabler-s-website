@@ -199,44 +199,23 @@ export function frondTexture() {
   return toTexture(c);
 }
 
-// Roadside billboard for one pillar: a fixed header plus a body that scrolls on a loop.
-// Canvases are drawn at 2x for crisp text; call update(time) each frame to scroll.
+// Roadside billboard for one pillar: a header (number, brand, title) over the brand's tagline.
+// The text is static; the full service list is in the details dialog. Canvases are drawn at 2x for crisp text.
 export const BILLBOARD_BG = '#0d131b';
 export function billboardTextures(index, pillar, contact, { width = 2048, headerH = 284, visibleH = 948, accent = '#c9a24a', bg = BILLBOARD_BG } = {}) {
-  const gold = accent, ink = '#f2efe8', muted = 'rgba(242,239,232,0.62)';
+  const gold = accent, ink = '#f2efe8';
   const PAD = 110;
   const [hc, hx] = canvas(width, headerH);
   const header = toTexture(hc, { aniso: 8 });
   header.wrapS = header.wrapT = THREE.ClampToEdgeWrapping;
+  const [bc, bx] = canvas(width, visibleH);
+  const body = toTexture(bc, { aniso: 8 });
+  body.wrapS = body.wrapT = THREE.ClampToEdgeWrapping;
 
-  // Lay the body out once to know its height, then draw it.
   const fonts = {
-    line: 'italic 400 92px "Instrument Serif", serif',
+    line: 'italic 400 150px "Instrument Serif", serif',
     label: '600 36px "JetBrains Mono", monospace',
-    item: '500 58px "Plus Jakarta Sans", sans-serif',
-    foot: '600 40px "Plus Jakarta Sans", sans-serif',
   };
-  const [bc, bx] = canvas(width, 64);
-  const layout = () => {
-    const ops = [];
-    let y = 120;
-    bx.font = fonts.line;
-    for (const l of lines(bx, pillar.line, width - PAD * 2)) { ops.push(['line', l, PAD, y + 80]); y += 100; }
-    y += 50;
-    ops.push(['label', `${pillar.services.length} SERVICES`, PAD, y + 36]); y += 90;
-    bx.font = fonts.item;
-    for (const sv of pillar.services) {
-      ops.push(['dash', '', PAD, y + 30]);
-      for (const l of lines(bx, sv, width - PAD * 2 - 70)) { ops.push(['item', l, PAD + 70, y + 50]); y += 74; }
-      y += 34;
-    }
-    y += 40;
-    ops.push(['rule', '', PAD, y]); y += 70;
-    ops.push(['foot', `Enabler-S FZE LLC  ·  ${contact.email}  ·  ${contact.phone}`, PAD, y + 40]); y += 140;
-    return { ops, h: Math.max(Math.ceil(y), Math.ceil(visibleH * 1.3)) };
-  };
-
-  let body, bodyH = 0;
   const draw = () => {
     // header: number, brand, title
     hx.fillStyle = bg; hx.fillRect(0, 0, width, headerH);
@@ -249,40 +228,19 @@ export function billboardTextures(index, pillar, contact, { width = 2048, header
     hx.fillText(pillar.title, PAD, 214);
     header.needsUpdate = true;
 
-    // body (resized only if the layout changed, e.g. after web fonts load)
-    const { ops, h } = layout();
-    if (h !== bodyH) { bodyH = bc.height = h; }
-    bx.fillStyle = bg; bx.fillRect(0, 0, width, bodyH);
-    for (const [kind, text, x, y] of ops) {
-      if (kind === 'dash') { bx.fillStyle = gold; bx.fillRect(x, y, 36, 5); continue; }
-      if (kind === 'rule') { bx.globalAlpha = 0.5; bx.fillStyle = gold; bx.fillRect(x, y, width - PAD * 2, 3); bx.globalAlpha = 1; continue; }
-      bx.font = fonts[kind];
-      bx.fillStyle = kind === 'label' ? gold : kind === 'line' ? ink : kind === 'foot' ? muted : ink;
-      bx.fillText(text, x, y);
-    }
-    if (body) { body.dispose(); }
-    body = toTexture(bc, { aniso: 8 });
-    body.wrapS = THREE.ClampToEdgeWrapping;
-    body.wrapT = THREE.RepeatWrapping;
-    body.repeat.set(1, visibleH / bodyH);
-    api.body = body;
-    api.onRedraw?.(body);
+    // body: the tagline, large and centred vertically
+    bx.fillStyle = bg; bx.fillRect(0, 0, width, visibleH);
+    bx.fillStyle = gold; bx.fillRect(0, 0, 22, visibleH);
+    bx.font = fonts.line;
+    const ls = lines(bx, pillar.line, width - PAD * 2), LH = 170;
+    let y = (visibleH - ls.length * LH) / 2 + 125;
+    bx.fillStyle = ink;
+    for (const l of ls) { bx.fillText(l, PAD, y); y += LH; }
+    bx.fillStyle = gold; bx.fillRect(PAD, y - 60, 160, 6);
+    body.needsUpdate = true;
   };
 
-  const SPEED = 62;   // canvas px per second, about one line every 1.2 s
-  let scroll = 0, rate = 1, lastT = null;
-  const api = {
-    header, body: null, onRedraw: null,
-    paused: false,      // set while the visitor hovers the billboard; scrolling eases to a stop
-    update(t) {
-      const dt = lastT === null ? 0 : Math.min(0.1, t - lastT);
-      lastT = t;
-      rate += ((api.paused ? 0 : 1) - rate) * Math.min(1, dt * 6);
-      scroll += dt * SPEED * rate;
-      const frac = (scroll / bodyH) % 1;
-      body.offset.y = 1 - body.repeat.y - frac;   // window slides down the canvas: text moves up
-    },
-  };
+  const api = { header, body, paused: false, update() {} };
   draw();
   // canvas text only uses web fonts once they've loaded, so redraw when they arrive
   if (document.fonts) Promise.all(Object.values(fonts).map((f) => document.fonts.load(f))).then(draw, () => {});

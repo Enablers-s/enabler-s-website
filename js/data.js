@@ -68,24 +68,6 @@ export const SOLUTIONS = [
   { title: 'Ecosystem Enablement', text: 'We connect clients to a full ecosystem of investors, finance, legal, tech, workforce, branding and trade for seamless global expansion.' },
 ];
 
-export const STEPS = [
-  { title: 'Define Requirements', text: 'Capture business needs, objectives, documentation and priorities under NDA.' },
-  { title: 'Design Integrated Solutions', text: 'Submit a tailored commercial proposal with end-to-end solutions aligned to your growth strategy.' },
-  { title: 'Structure & Contract', text: 'Formalise a binding agreement, align scope and deliverables, and enable secure platform access with role-based functionality across all services.' },
-  { title: 'Execute with Control', text: 'Deliver through expert teams and AI-enabled systems with real-time visibility and operational oversight.' },
-  { title: 'Scale, Optimise & Unlock Opportunities', text: 'Use platform intelligence to identify opportunities, drive growth and support global scale.' },
-];
-
-export const CLIENTS = ['Startups & Individuals', 'SMEs & Mid-Market Companies', 'Entrepreneurs', 'Investors & HNIs', 'Family Offices', 'Multinational Companies', 'Banks & Financial Institutions', 'Private Equity & VC Funds', 'Government Entities', 'Importers & Exporters', 'Tech Innovators', 'Corporate Enterprises', 'ESG & Impact Groups'];
-
-export const COVERAGE = {
-  'Middle East & GCC': ['UAE', 'Saudi Arabia', 'Oman', 'Qatar', 'Bahrain', 'Kuwait'],
-  'Africa': ['Botswana', 'Burkina Faso', 'Burundi', 'Cameroon', 'Chad', 'Comoros', 'Djibouti', 'Egypt', 'Equatorial Guinea', 'Ethiopia', 'Gabon', 'Gambia', 'Ghana', 'Guinea', 'Kenya', 'Madagascar', 'Malawi', 'Mauritius', 'Morocco', 'Mozambique', 'Namibia', 'Niger', 'Nigeria', 'Republic of the Congo', 'Rwanda', 'Senegal', 'Seychelles', 'Sierra Leone', 'South Africa', 'Tanzania', 'Togo', 'Tunisia', 'Uganda', 'Zambia', 'Zimbabwe'],
-  'Europe & Central Asia': ['Azerbaijan', 'Belarus', 'Bulgaria', 'Croatia', 'Cyprus', 'Estonia', 'France', 'Georgia', 'Germany', 'Greece', 'Italy', 'Kazakhstan', 'Latvia', 'Lithuania', 'Netherlands', 'Poland', 'Romania', 'Serbia', 'Spain', 'United Kingdom'],
-  'Asia-Pacific': ['Australia', 'China', 'India', 'Indonesia', 'Japan', 'Malaysia & Labuan', 'New Zealand', 'Philippines', 'Singapore', 'South Korea', 'Sri Lanka', 'Thailand', 'Vietnam'],
-  'Americas': ['Argentina', 'Brazil', 'Canada', 'Cayman Islands', 'Chile', 'Mexico', 'Panama', 'Paraguay', 'Peru', 'Uruguay', 'USA'],
-};
-
 export const ECOSYSTEM = [
   { name: 'Enabler-S', tag: 'Enabling Business. Accelerating Growth.' },
   { name: 'UG Depot', tag: 'Connecting Markets. Moving Global Trade.' },
@@ -109,3 +91,41 @@ export const CONTACT = {
   phone: '+971 54 558 6455',
   web: 'www.enabler-s.com',
 };
+
+// Official channel partner: UAE free zones by emirate (logos from each free zone's official website)
+export const FREE_ZONES = [
+  { emirate: 'Abu Dhabi', zones: [
+    { name: 'Masdar Free Zone', logo: 'assets/freezones/logos/masdar.svg', label: 'Sustainable. Innovative. Global.' },
+  ] },
+  { emirate: 'Dubai', zones: [
+    { name: 'Meydan Free Zone', logo: 'assets/freezones/logos/meydan.webp' },
+    { name: 'DMCC Free Zone', logo: 'assets/freezones/logos/dmcc.png' },
+    { name: 'IFZA Free Zone', logo: 'assets/freezones/logos/ifza.png' },
+    { name: 'Dubai South Free Zone', logo: 'assets/freezones/logos/dubai-south.svg' },
+    { name: 'Dubai Commerce City', logo: 'assets/freezones/logos/dubai-commerce-city.svg' },
+  ] },
+  { emirate: 'Sharjah', zones: [
+    { name: 'SPC Free Zone', logo: 'assets/freezones/logos/spc.png' },
+    { name: 'Shams Free Zone', logo: 'assets/freezones/logos/shams.png' },
+    { name: 'Hamriyah Free Zone', logo: 'assets/freezones/logos/hamriyah.svg' },
+  ] },
+  { emirate: 'Ajman', zones: [
+    { name: 'Ajman New Venture Free Zone', logo: 'assets/freezones/logos/ajman-nv.webp' },
+    { name: 'Ajman Free Zone', logo: 'assets/freezones/logos/afz.svg' },
+  ] },
+  { emirate: 'Ras Al Khaimah', zones: [
+    { name: 'RAK Free Zone', logo: 'assets/freezones/logos/rak-free-zone.svg' },
+    { name: 'RAK DAO Free Zone', logo: 'assets/freezones/logos/rak-dao.svg' },
+  ] },
+  { emirate: 'Umm Al Quwain', zones: [
+    { name: 'Umm Al Quwain Free Zone', logo: 'assets/freezones/logos/uaq.svg', label: 'Your Gateway to New Possibilities' },
+  ] },
+];
+
+export const PARTNER_WHY = [
+  'Official Channel Partner for All Major UAE Free Zones',
+  'Expert Guidance & End-to-End Support',
+  'Fast & Hassle-Free Setup Process',
+  'Strategic Locations & Diverse Business Opportunities',
+  'Helping You Build, Scale & Succeed',
+];

@@ -1,5 +1,5 @@
 // The scroll-driven 3D journey, seen through the eyes of a man walking down a boulevard at night.
-// At each of the 8 buildings he stops and turns to face it, reading its scrolling billboard.
+// At each of the 8 buildings he stops and turns to face it, reading its billboard.
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -318,7 +318,7 @@ export function createJourney(canvas, pillars, contact) {
       const need = Math.max(14.5, (BILLBOARD.width / 2 + 0.6) / Math.tan(hHalf));
       const standX = THREE.MathUtils.clamp(Math.min(PATH_X, s.bx + s.nx * need), -maxX, maxX);
       pos.x = THREE.MathUtils.lerp(pos.x, standX, w);
-      // first the brand hoarding on the building, then square on to the scrolling billboard
+      // first the brand hoarding on the building, then square on to the billboard
       const dx = s.bx - pos.x, dy = s.by + 1.2 - EYE, dz = s.bz - wz;
       const hx = s.hoarding.x - pos.x, hy = s.hoarding.y - EYE, hz = s.hoarding.z - wz;
       const onBrand = THREE.MathUtils.smoothstep(wz - s.fz, 0.8, HOARDING_AT - 0.7);
@@ -359,7 +359,7 @@ export function createJourney(canvas, pillars, contact) {
   function updatePhone(d, wz) {
     const tag = (i) => `${String(i + 1).padStart(2, '0')} / 08 · ${pillars[i].brand.toUpperCase()}`;
     if (d < 6) hand.draw({ kicker: 'WELCOME', title: 'Eight pillars. One partner.', sub: 'Scroll to walk the boulevard. Tap any billboard for details.' });
-    else if (current >= 0) hand.draw({ kicker: tag(current), title: pillars[current].title, sub: `${pillars[current].services.length} services on the billboard`, cta: 'Tap for details' });
+    else if (current >= 0) hand.draw({ kicker: tag(current), title: pillars[current].title, sub: `${pillars[current].services.length} services · tap the billboard`, cta: 'Tap for details' });
     else if (next >= 0) hand.draw({ kicker: `NEXT · ${Math.max(1, Math.round(wz - stops[next].z))} M`, title: pillars[next].title, sub: pillars[next].line });
     else hand.draw({ kicker: 'YOU\'VE SEEN IT ALL', title: 'Where strategy meets execution', sub: contact.email, cta: '↺ Walk again' });
   }

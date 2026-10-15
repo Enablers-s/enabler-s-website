@@ -1,4 +1,4 @@
-import { PILLARS, PREMIUM, CHALLENGES, SOLUTIONS, STEPS, CLIENTS, COVERAGE, ECOSYSTEM, VALUES, CONTACT } from './data.js';
+import { PILLARS, PREMIUM, CHALLENGES, SOLUTIONS, ECOSYSTEM, VALUES, CONTACT, FREE_ZONES, PARTNER_WHY } from './data.js';
 
 // Lead form → n8n workflow 01 (Lead Intake & AI Qualification).
 // Example: 'https://n8n.enabler-s.com/webhook/enabler-lead'
@@ -26,12 +26,15 @@ function renderSections() {
       <details><summary>All ${p.services.length} services</summary><ul>${p.services.map((s) => `<li>${esc(s)}</li>`).join('')}</ul></details>
     </article>`).join('');
   $('#premium').innerHTML = PREMIUM.map((s) => `<li>${esc(s)}</li>`).join('');
-  $('#steps').innerHTML = STEPS.map((s) => `<li class="reveal"><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p></li>`).join('');
-  $('#client-list').innerHTML = CLIENTS.map((c) => `<li>${esc(c)}</li>`).join('');
-  const total = Object.values(COVERAGE).reduce((n, l) => n + l.length, 0);
-  $('#country-count').textContent = total;
-  $('#regions').innerHTML = Object.entries(COVERAGE).map(([region, list]) => `
-    <div class="region reveal"><h3>${esc(region)} <span>${list.length}</span></h3><ul>${list.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>`).join('');
+  const pin = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg>';
+  $('#fz-list').innerHTML = FREE_ZONES.map((e) => `
+    <li class="fz-card reveal">
+      <p class="fz-tag">${pin}${esc(e.emirate)}</p>
+      <ul class="fz-zones n${e.zones.length}">${e.zones.map((z) => `
+        <li><img class="fz-logo" src="${esc(z.logo)}" alt="${esc(z.name)} logo" loading="lazy"><span class="fz-name">${esc(z.name)}</span>${z.label ? `<span class="fz-label">${esc(z.label)}</span>` : ''}</li>`).join('')}
+      </ul>
+    </li>`).join('');
+  $('#fz-why').innerHTML = PARTNER_WHY.map((w) => `<li>${esc(w)}</li>`).join('');
   $('#value-list').innerHTML = VALUES.map((v) => `<li><h4>${esc(v.title)}</h4><p>${esc(v.text)}</p></li>`).join('');
   $('#eco-list').innerHTML = ECOSYSTEM.map((e) => `<li class="reveal"><b>${esc(e.name)}</b><span>${esc(e.tag)}</span></li>`).join('');
   $('#c-address').textContent = CONTACT.address;
@@ -128,7 +131,7 @@ async function startJourney() {
   const stopAt = journey.stops.map((s) => s.distance);
 
   // Scroll → distance, with extra scroll "weight" near each building: the walker slows as he turns in,
-  // holds while he reads the brand hoarding, then holds again square on to the scrolling billboard
+  // holds while he reads the brand hoarding, then holds again square on to the billboard
   const H = journey.hoardingAt;
   const N = 4000, cum = new Float32Array(N + 1);
   const density = (d) => 1 + 2.2 * Math.exp(-((d / 6) ** 2))

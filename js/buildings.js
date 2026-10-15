@@ -50,7 +50,7 @@ function aviationLight(y) {
   m.position.y = y; return m;
 }
 
-// Roadside billboard in front of each building, facing local +Z. The body text scrolls on a loop.
+// Roadside billboard in front of each building, facing local +Z: a header over the brand's tagline.
 export const BILLBOARD = { width: 9.4, bottom: 2.6, headerH: 1.3, bodyH: 4.35 };
 export function billboard(index, pillar, contact) {
   const { width: W, bottom, headerH, bodyH } = BILLBOARD;
@@ -83,18 +83,6 @@ export function billboard(index, pillar, contact) {
   trim.position.set(0, bottom + bodyH + 0.03, 0.001); g.add(trim);
   const body = new THREE.Mesh(new THREE.PlaneGeometry(W, bodyH), screen(tex.body));
   body.position.set(0, bottom + bodyH / 2, 0); g.add(body);
-  tex.onRedraw = (t) => { body.material.map = t; body.material.needsUpdate = true; };
-
-  // soft fade at the top and bottom of the scrolling area
-  const fc = document.createElement('canvas'); fc.width = 4; fc.height = 256;
-  const fx = fc.getContext('2d'), grad = fx.createLinearGradient(0, 0, 0, 256);
-  grad.addColorStop(0, bg); grad.addColorStop(0.12, bg + '00');
-  grad.addColorStop(0.88, bg + '00'); grad.addColorStop(1, bg);
-  fx.fillStyle = grad; fx.fillRect(0, 0, 4, 256);
-  const fadeTex = new THREE.CanvasTexture(fc); fadeTex.colorSpace = THREE.SRGBColorSpace;
-  const fade = new THREE.Mesh(new THREE.PlaneGeometry(W, bodyH),
-    new THREE.MeshBasicMaterial({ map: fadeTex, color: 0xe6e6e6, transparent: true, toneMapped: false, depthWrite: false }));
-  fade.position.set(0, bottom + bodyH / 2, 0.004); g.add(fade);
 
   // up-lights on the catwalk
   const lampGeo = new THREE.BoxGeometry(0.34, 0.16, 0.22);
@@ -119,7 +107,7 @@ export function billboard(index, pillar, contact) {
   sheen.position.set(0, cy, 0.008); g.add(sheen);
 
   // power: screens are dark until the walker approaches, then flicker on
-  const faces = [header.material, body.material, fade.material];
+  const faces = [header.material, body.material];
   const base = new THREE.Color(0xe6e6e6);
   let wakeAt = null, woke = false, level = -1;
   const setLevel = (k) => {
@@ -130,22 +118,20 @@ export function billboard(index, pillar, contact) {
   setLevel(0);
   const flicker = (s) => (s < 0 ? 0 : s > 0.9 ? 1 : (Math.sin(s * 70) > 0.1 - s ? 0.45 + s * 0.6 : 0.08));
 
-  // hover: scrolling eases to a stop and the trim brightens
+  // hover: the trim brightens
   const trimBase = accent.clone();
   return {
-    group: g, centerY: cy, hit: [header, body, fade],
+    group: g, centerY: cy, hit: [header, body],
     update(t) {
       if (woke && wakeAt === null) wakeAt = t;
       setLevel(woke ? flicker(t - wakeAt) : 0);
       sheen.visible = woke && level > 0.9;
       if (sheen.visible) sheenTex.offset.x = 1 - ((t * 0.9 + index * 1.7) % 8);   // crosses the board, then rests
-      tex.update(t);
     },
     get level() { return level; },
     wake() { woke = true; },
     sleep() { woke = false; wakeAt = null; },
     setHover(on) {
-      tex.paused = on;
       trim.material.color.copy(trimBase).multiplyScalar(on ? 2.2 : 1);
     },
   };
