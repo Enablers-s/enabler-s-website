@@ -98,7 +98,7 @@ em { font-style: italic; font-family: var(--display); }
 .stop-card.right { right: var(--gutter); }
 .stop-card.active { opacity: 1; transform: translateY(-50%); pointer-events: auto; }
 .stop-cta[hidden] { display: none; }
-.stop-cta { position: absolute; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 78px); transform: translateX(-50%); z-index: 2; box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
+.stop-cta { position: absolute; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 118px); transform: translateX(-50%); z-index: 2; box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
 .no-webgl .stop-cta { display: none; }
 
 .pillar-dialog { width: min(640px, calc(100vw - 32px)); max-height: min(86vh, 860px); padding: 30px 30px 26px; border: 0; border-radius: var(--radius);
@@ -140,15 +140,31 @@ html:not(.no-webgl) .stops { position: absolute; width: 1px; height: 1px; overfl
 .fade.on { opacity: 1; pointer-events: auto; }
 .no-webgl .fade { display: none; }
 
-.rail { position: absolute; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 26px); transform: translateX(-50%); width: min(560px, calc(100vw - 2 * var(--gutter))); }
-.rail-track { position: absolute; left: 0; right: 0; top: 7px; height: 2px; background: rgba(255,255,255,0.18); border-radius: 2px; }
-.rail-fill { height: 100%; width: 0; background: var(--gold); border-radius: 2px; }
-#rail-dots { position: relative; display: flex; justify-content: space-between; }
-#rail-dots button { width: 16px; height: 16px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background: var(--night-2); box-shadow: inset 0 0 0 2px rgba(255,255,255,0.45); position: relative; transition: box-shadow .3s, background .3s; }
-#rail-dots button.passed { background: var(--gold); box-shadow: none; }
-#rail-dots button.current { box-shadow: 0 0 0 5px rgba(201,162,74,0.3); }
-#rail-dots button span { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); white-space: nowrap; font: 600 0.7rem/1 var(--mono); letter-spacing: 0.06em; color: var(--on-dark); background: rgba(9,16,26,0.8); padding: 6px 8px; border-radius: 6px; opacity: 0; transition: opacity .2s; pointer-events: none; }
-#rail-dots button:hover span, #rail-dots button:focus-visible span, #rail-dots button.current span { opacity: 1; }
+.rail { position: absolute; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); width: min(760px, calc(100vw - 2 * var(--gutter))); padding: 12px 52px 8px 22px; border-radius: 18px; background: rgba(8, 12, 20, 0.58); backdrop-filter: blur(14px) saturate(1.2); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.09), 0 18px 40px rgba(0,0,0,0.35); --p: 0%; --wc: var(--gold); }
+.rail-head { display: flex; align-items: baseline; gap: 12px; margin: 0 0 6px; min-width: 0; }
+.rail-count { font: 600 0.72rem/1 var(--mono); letter-spacing: 0.1em; color: var(--gold-soft); flex: none; }
+.rail-now { font-size: 0.86rem; color: var(--on-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.rail-now b { font-weight: 700; color: var(--gold-soft); }
+.rail-bar { position: relative; height: 44px; }
+.rail-track { position: absolute; left: 0; right: 0; top: 13px; height: 4px; background: rgba(255,255,255,0.12); border-radius: 4px; }
+.rail-fill { position: absolute; inset: 0; border-radius: 4px; background: var(--rail-grad, var(--gold)); clip-path: inset(0 calc(100% - var(--p)) 0 0 round 4px); }
+.rail-walker { position: absolute; top: 15px; left: var(--p); width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; background: radial-gradient(circle, #fff 0 3px, var(--wc) 4px 6px, transparent 7px); box-shadow: 0 0 14px 2px var(--wc); pointer-events: none; transition: background .4s, box-shadow .4s; }
+#rail-dots { position: absolute; inset: 0; }
+#rail-dots li { position: absolute; top: 0; transform: translateX(-50%); }
+#rail-dots button { position: relative; display: block; width: 30px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer; }
+#rail-dots button::before { content: ""; position: absolute; left: 50%; top: 15px; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: #0d1520; box-shadow: inset 0 0 0 2px rgba(255,255,255,0.5); transition: all .3s; }
+#rail-dots button.passed::before { background: var(--c); box-shadow: 0 0 10px var(--c); }
+#rail-dots button.current::before { width: 16px; height: 16px; margin: -8px 0 0 -8px; background: var(--c); box-shadow: 0 0 0 4px rgba(255,255,255,0.12), 0 0 18px var(--c); }
+#rail-dots button.current::after { content: ""; position: absolute; left: 50%; top: 15px; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; box-shadow: 0 0 0 2px var(--c); animation: rail-ping 1.6s ease-out infinite; }
+@keyframes rail-ping { from { transform: scale(1); opacity: 0.9; } to { transform: scale(2.4); opacity: 0; } }
+#rail-dots button i { position: absolute; left: 50%; top: 28px; transform: translateX(-50%); font: 600 0.62rem/1 var(--mono); font-style: normal; letter-spacing: 0.06em; color: rgba(243,241,236,0.45); transition: color .3s; }
+#rail-dots button.passed i { color: rgba(243,241,236,0.8); }
+#rail-dots button.current i { color: var(--c); }
+#rail-dots button span { position: absolute; bottom: 40px; left: 50%; transform: translate(-50%, 4px); white-space: nowrap; font: 600 0.7rem/1 var(--mono); letter-spacing: 0.06em; color: var(--on-dark); background: rgba(9,16,26,0.92); box-shadow: inset 0 0 0 1px var(--c); padding: 6px 9px; border-radius: 7px; opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none; }
+#rail-dots button:hover span, #rail-dots button:focus-visible span { opacity: 1; transform: translate(-50%, 0); }
+.rail-end { position: absolute; right: -38px; top: 2px; width: 22px; height: 26px; opacity: 0.45; filter: grayscale(1); transition: opacity .5s, filter .5s; }
+.rail-end img { width: 100%; height: 100%; object-fit: contain; }
+.rail-end.reached { opacity: 1; filter: drop-shadow(0 0 8px rgba(227,198,130,0.8)); }
 
 /* WebGL unavailable: show the eight pillars as a static list */
 .no-webgl .journey { height: auto; }
@@ -312,15 +328,19 @@ html:not(.no-webgl) .stops { position: absolute; width: 1px; height: 1px; overfl
   .site-header nav ul { display: none; position: absolute; right: var(--gutter); top: 64px; flex-direction: column; align-items: stretch; gap: 4px; background: var(--paper); color: var(--ink); padding: 12px; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); min-width: 220px; }
   .site-header nav ul.open { display: flex; }
   .site-header nav ul a:not(.btn) { padding: 10px 12px; }
-  .intro { right: var(--gutter); bottom: 96px; }
+  .intro { right: var(--gutter); bottom: 120px; }
   .intro .lede { font-size: 1rem; }
-  .stop-card { top: auto; bottom: 86px; left: var(--gutter) !important; right: var(--gutter) !important; width: auto; transform: translateY(24px); padding: 20px; }
+  .stop-card { top: auto; bottom: 150px; left: var(--gutter) !important; right: var(--gutter) !important; width: auto; transform: translateY(24px); padding: 20px; }
   .stop-card.active { transform: none; }
   .stop-card h2 { font-size: 1.6rem; }
   .stop-card ul { display: none; }
   .field-row { grid-template-columns: 1fr; }
-  .rail { bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); }
+  .rail { bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); padding: 10px 40px 6px 16px; }
+  .rail-now { font-size: 0.78rem; }
+  .rail-end { right: -30px; }
+  #rail-dots button { width: 24px; }
   #rail-dots button span { display: none; }
+  .stop-cta { bottom: calc(env(safe-area-inset-bottom, 0px) + 104px); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0.01ms !important; animation: none !important; }

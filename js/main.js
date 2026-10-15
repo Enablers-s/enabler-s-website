@@ -51,7 +51,7 @@ function renderSections() {
       <ul>${p.highlights.map((h) => `<li>${esc(h)}</li>`).join('')}</ul>
       <a href="#pillar-${p.id}">See all ${p.services.length} services →</a>
     </article>`).join('');
-  $('#rail-dots').innerHTML = PILLARS.map((p, i) => `<li><button type="button" data-stop="${i}" aria-label="Go to ${esc(p.title)}"><span>${String(i + 1).padStart(2, '0')} ${esc(p.brand)}</span></button></li>`).join('');
+  $('#rail-dots').innerHTML = PILLARS.map((p, i) => `<li style="--c:${esc(p.color)}"><button type="button" data-stop="${i}" aria-label="Go to ${esc(p.brand)}: ${esc(p.title)}"><span>${esc(p.brand)}</span><i>${String(i + 1).padStart(2, '0')}</i></button></li>`).join('');
 }
 
 function setupHeader() {
@@ -126,9 +126,16 @@ async function startJourney() {
   const section = $('#journey');
   const cards = [...document.querySelectorAll('.stop-card')];
   const dots = [...document.querySelectorAll('#rail-dots button')];
-  const intro = $('#intro'), outro = $('#outro'), fill = $('#rail-fill'), sticky = $('.journey-sticky');
+  const intro = $('#intro'), outro = $('#outro'), sticky = $('.journey-sticky');
   const L = journey.pathLength;
   const stopAt = journey.stops.map((s) => s.distance);
+
+  // progress rail: dots sit at each building's true place along the walk, and the line fills in brand colours
+  const rail = $('#rail'), railNow = $('#rail-now'), railCount = $('#rail-count'), railEnd = $('#rail-end');
+  const pct = (d) => Math.max(0, Math.min(100, (d / L) * 100));
+  dots.forEach((b, i) => { b.parentElement.style.left = `${pct(stopAt[i])}%`; });
+  rail.style.setProperty('--rail-grad', `linear-gradient(90deg, var(--gold) 0%, ${PILLARS.map((p, i) => `${p.color} ${pct(stopAt[i]).toFixed(1)}%`).join(', ')}, var(--gold) 100%)`);
+  let railKey = '';
 
   // Scroll → distance, with extra scroll "weight" near each building: the walker slows as he turns in,
   // holds while he reads the brand hoarding, then holds again square on to the billboard
@@ -173,7 +180,21 @@ async function startJourney() {
       active = cur;
     }
     dots.forEach((b, i) => { b.classList.toggle('passed', d >= stopAt[i] - 6); b.classList.toggle('current', i === cur); });
-    fill.style.width = `${(d / L) * 100}%`;
+    rail.style.setProperty('--p', `${pct(d)}%`);
+    const last = stopAt.reduce((n, sd, i) => (d >= sd - 6 ? i : n), -1);
+    const next = Math.min(PILLARS.length - 1, last + 1);
+    const done = d > L - 12;
+    const key = `${cur}|${last}|${done}`;
+    if (key !== railKey) {
+      railKey = key;
+      rail.style.setProperty('--wc', last >= 0 ? PILLARS[last].color : 'var(--gold)');
+      railEnd.classList.toggle('reached', done);
+      railCount.textContent = `${String(Math.max(0, cur >= 0 ? cur + 1 : last + 1)).padStart(2, '0')} / ${String(PILLARS.length).padStart(2, '0')}`;
+      railNow.innerHTML = done ? 'Journey complete <b>· Where strategy meets execution</b>'
+        : cur >= 0 ? `<b style="color:${PILLARS[cur].color}">${esc(PILLARS[cur].brand)}</b> · ${esc(PILLARS[cur].title)}`
+        : d < 6 ? 'Scroll to start the walk'
+        : `Next stop <b style="color:${PILLARS[next].color}">${esc(PILLARS[next].brand)}</b>`;
+    }
     outro.classList.toggle('active', d > L - 12);
     const here = journey.current;
     cta.hidden = here < 0;

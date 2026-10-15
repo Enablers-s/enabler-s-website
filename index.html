@@ -79,9 +79,14 @@
 
         <button class="btn btn-gold btn-sm stop-cta" id="stop-cta" type="button" hidden>View details</button>
 
-        <div class="rail" id="rail" aria-label="Jump to a pillar">
-          <div class="rail-track"><div class="rail-fill" id="rail-fill"></div></div>
-          <ol id="rail-dots"></ol>
+        <div class="rail" id="rail" aria-label="Journey progress: jump to a pillar">
+          <p class="rail-head" aria-live="polite"><span class="rail-count" id="rail-count">00 / 08</span><span class="rail-now" id="rail-now">Scroll to start the walk</span></p>
+          <div class="rail-bar">
+            <div class="rail-track"><div class="rail-fill" id="rail-fill"></div></div>
+            <span class="rail-walker" id="rail-walker" aria-hidden="true"></span>
+            <ol id="rail-dots"></ol>
+            <span class="rail-end" id="rail-end" aria-hidden="true"><img src="assets/logo-mark.png" alt=""></span>
+          </div>
         </div>
       </div>
     </section>
