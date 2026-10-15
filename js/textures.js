@@ -199,54 +199,6 @@ export function frondTexture() {
   return toTexture(c);
 }
 
-// Roadside billboard for one pillar: a header (number, brand, title) over the brand's tagline.
-// The text is static; the full service list is in the details dialog. Canvases are drawn at 2x for crisp text.
-export const BILLBOARD_BG = '#0d131b';
-export function billboardTextures(index, pillar, contact, { width = 2048, headerH = 284, visibleH = 948, accent = '#c9a24a', bg = BILLBOARD_BG } = {}) {
-  const gold = accent, ink = '#f2efe8';
-  const PAD = 110;
-  const [hc, hx] = canvas(width, headerH);
-  const header = toTexture(hc, { aniso: 8 });
-  header.wrapS = header.wrapT = THREE.ClampToEdgeWrapping;
-  const [bc, bx] = canvas(width, visibleH);
-  const body = toTexture(bc, { aniso: 8 });
-  body.wrapS = body.wrapT = THREE.ClampToEdgeWrapping;
-
-  const fonts = {
-    line: 'italic 400 150px "Instrument Serif", serif',
-    label: '600 36px "JetBrains Mono", monospace',
-  };
-  const draw = () => {
-    // header: number, brand, title
-    hx.fillStyle = bg; hx.fillRect(0, 0, width, headerH);
-    hx.fillStyle = gold; hx.fillRect(0, 0, 22, headerH);
-    hx.font = fonts.label; hx.fillStyle = gold;
-    hx.fillText(`${String(index).padStart(2, '0')} / 08  ·  ${pillar.brand.toUpperCase()}`, PAD, 92);
-    hx.fillStyle = ink;
-    let size = 96;
-    do { hx.font = `600 ${size}px "Plus Jakarta Sans", sans-serif`; size -= 4; } while (hx.measureText(pillar.title).width > width - PAD * 2 && size > 40);
-    hx.fillText(pillar.title, PAD, 214);
-    header.needsUpdate = true;
-
-    // body: the tagline, large and centred vertically
-    bx.fillStyle = bg; bx.fillRect(0, 0, width, visibleH);
-    bx.fillStyle = gold; bx.fillRect(0, 0, 22, visibleH);
-    bx.font = fonts.line;
-    const ls = lines(bx, pillar.line, width - PAD * 2), LH = 170;
-    let y = (visibleH - ls.length * LH) / 2 + 125;
-    bx.fillStyle = ink;
-    for (const l of ls) { bx.fillText(l, PAD, y); y += LH; }
-    bx.fillStyle = gold; bx.fillRect(PAD, y - 60, 160, 6);
-    body.needsUpdate = true;
-  };
-
-  const api = { header, body, paused: false, update() {} };
-  draw();
-  // canvas text only uses web fonts once they've loaded, so redraw when they arrive
-  if (document.fonts) Promise.all(Object.values(fonts).map((f) => document.fonts.load(f))).then(draw, () => {});
-  return api;
-}
-
 // Monument sign at a building entrance
 export function signTexture(number, title, sub, accent = '#c9a24a') {
   const [c, x] = canvas(1024, 400);

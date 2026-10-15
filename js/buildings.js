@@ -1,7 +1,8 @@
 // The 8 Solutions Suite pillars as 8 buildings. Each builder returns
 // { group, depth, height, update? } with the building's front facing local +Z.
 import * as THREE from 'three';
-import { facadeTextures, concreteTexture, stoneTexture, corrugatedTexture, billboardTextures, signTexture, ledScreen, random } from './textures.js';
+import { facadeTextures, concreteTexture, stoneTexture, corrugatedTexture, signTexture, ledScreen, random } from './textures.js';
+import { drawBoard } from './boardAnims.js';
 
 const metalDark = new THREE.MeshStandardMaterial({ color: 0x2a2f36, metalness: 0.85, roughness: 0.35 });
 const metalLight = new THREE.MeshStandardMaterial({ color: 0xd9dde2, metalness: 0.7, roughness: 0.3 });
@@ -50,7 +51,8 @@ function aviationLight(y) {
   m.position.y = y; return m;
 }
 
-// Roadside billboard in front of each building, facing local +Z: a header over the brand's tagline.
+// Roadside billboard in front of each building, facing local +Z: one screen playing a looping,
+// text-free animation of the pillar's topic (see boardAnims.js).
 export const BILLBOARD = { width: 9.4, bottom: 2.6, headerH: 1.3, bodyH: 4.35 };
 export function billboard(index, pillar, contact) {
   const { width: W, bottom, headerH, bodyH } = BILLBOARD;
@@ -60,9 +62,17 @@ export function billboard(index, pillar, contact) {
   // themed in the brand colour: accents in the colour, background a very dark tint of it
   const accent = new THREE.Color(pillar.color);
   const hsl = {}; accent.getHSL(hsl);
-  const bg = '#' + new THREE.Color().setHSL(hsl.h, 0.5, 0.045).getHexString();
-  const tex = billboardTextures(index, pillar, contact, { visibleH: Math.round(2048 * bodyH / W), accent: pillar.color, bg });
-  const screen = (map) => new THREE.MeshBasicMaterial({ map, color: 0xe6e6e6, toneMapped: false });
+  const colors = {
+    accent: '#' + accent.getHexString(),
+    soft: '#' + new THREE.Color().setHSL(hsl.h, Math.min(1, hsl.s + 0.1), Math.min(0.82, hsl.l + 0.22)).getHexString(),
+    bg: '#' + new THREE.Color().setHSL(hsl.h, 0.5, 0.045).getHexString(),
+  };
+  const cw = 1024, ch = Math.round(cw * H / W);
+  const canvas = document.createElement('canvas'); canvas.width = cw; canvas.height = ch;
+  const ctx = canvas.getContext('2d');
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
+  drawBoard(pillar.id, ctx, cw, ch, 0, colors); tex.needsUpdate = true;
 
   // frame, posts, catwalk
   const frame = solidBox(W + 0.36, H + 0.36, 0.4, metalDark);
@@ -76,13 +86,9 @@ export function billboard(index, pillar, contact) {
   const walk = solidBox(W, 0.06, 0.7, metalDark);
   walk.position.set(0, bottom - 0.2, 0.3); g.add(walk);
 
-  // faces
-  const header = new THREE.Mesh(new THREE.PlaneGeometry(W, headerH), screen(tex.header));
-  header.position.set(0, bottom + bodyH + 0.06 + headerH / 2, 0); g.add(header);
-  const trim = new THREE.Mesh(new THREE.PlaneGeometry(W, 0.06), new THREE.MeshBasicMaterial({ color: accent }));
-  trim.position.set(0, bottom + bodyH + 0.03, 0.001); g.add(trim);
-  const body = new THREE.Mesh(new THREE.PlaneGeometry(W, bodyH), screen(tex.body));
-  body.position.set(0, bottom + bodyH / 2, 0); g.add(body);
+  // the screen
+  const face = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshBasicMaterial({ map: tex, color: 0xe6e6e6, toneMapped: false }));
+  face.position.set(0, cy, 0); g.add(face);
 
   // up-lights on the catwalk
   const lampGeo = new THREE.BoxGeometry(0.34, 0.16, 0.22);
@@ -107,22 +113,28 @@ export function billboard(index, pillar, contact) {
   sheen.position.set(0, cy, 0.008); g.add(sheen);
 
   // power: screens are dark until the walker approaches, then flicker on
-  const faces = [header.material, body.material];
   const base = new THREE.Color(0xe6e6e6);
+  let hover = 1;
   let wakeAt = null, woke = false, level = -1;
   const setLevel = (k) => {
     if (Math.abs(k - level) < 0.004) return;
     level = k;
-    for (const m of faces) m.color.copy(base).multiplyScalar(Math.max(0.035, k));
+    face.material.color.copy(base).multiplyScalar(Math.max(0.035, k) * hover);
   };
   setLevel(0);
   const flicker = (s) => (s < 0 ? 0 : s > 0.9 ? 1 : (Math.sin(s * 70) > 0.1 - s ? 0.45 + s * 0.6 : 0.08));
 
-  // hover: the trim brightens
-  const trimBase = accent.clone();
-  return {
-    group: g, centerY: cy, hit: [header, body],
+  // the animation is redrawn at up to 30 fps, only while the screen is on and near the walker
+  let lastDraw = -1;
+  const api = {
+    group: g, centerY: cy, hit: [face],
+    active: false,
     update(t) {
+      if (woke && api.active && t - lastDraw > 1 / 30) {
+        lastDraw = t;
+        drawBoard(pillar.id, ctx, cw, ch, t, colors);
+        tex.needsUpdate = true;
+      }
       if (woke && wakeAt === null) wakeAt = t;
       setLevel(woke ? flicker(t - wakeAt) : 0);
       sheen.visible = woke && level > 0.9;
@@ -131,10 +143,12 @@ export function billboard(index, pillar, contact) {
     get level() { return level; },
     wake() { woke = true; },
     sleep() { woke = false; wakeAt = null; },
-    setHover(on) {
-      trim.material.color.copy(trimBase).multiplyScalar(on ? 2.2 : 1);
+    setHover(on) {                          // hover: the screen brightens a little
+      hover = on ? 1.15 : 1;
+      const k = level; level = -1; setLevel(k);
     },
   };
+  return api;
 }
 
 // The Enabler-S emblem (assets/logo-mark.png) as a gold monument at the end of the boulevard, facing

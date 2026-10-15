@@ -88,7 +88,12 @@ export function createJourney(canvas, pillars, contact) {
   // ---- street lamps (instanced) ---------------------------------------------------
   const lampZs = [];
   const nearStop = (z, r) => pillars.some((_, i) => Math.abs(z - (FIRST_Z - i * SPACING)) < r);
-  for (let z = START_Z + 20; z > roadEnd + 40; z -= 26) if (!nearStop(z, 8)) lampZs.push(z);   // keep billboard views clear
+  // keep each billboard's sight line clear: no lamp between where he stands to read it and just past the board
+  const inBoardView = (z) => pillars.some((_, i) => {
+    const bz = FIRST_Z - i * SPACING + 3, fz = bz + Math.sin(BOARD_ANGLE) * VIEW_DIST;
+    return z < fz + 4 && z > bz - 12;
+  });
+  for (let z = START_Z + 20; z > roadEnd + 40; z -= 26) if (!nearStop(z, 8) && !inBoardView(z)) lampZs.push(z);
   const lampN = lampZs.length * 2;
   const lampHeads = [];
   const poleMat = new THREE.MeshStandardMaterial({ color: 0x2b2f35, metalness: 0.8, roughness: 0.4 });
@@ -417,7 +422,10 @@ export function createJourney(canvas, pillars, contact) {
     boards.forEach((b, i) => { boardLevels[i] = b.level; });
     boardLights.update(boardLevels);
     sky.update(camera.position);
-    stops.forEach((s, i) => { if (wz - s.z < 55) boards[i].wake(); });   // screens power on as he approaches
+    stops.forEach((s, i) => {
+      if (wz - s.z < 55) boards[i].wake();   // screens power on as he approaches
+      boards[i].active = wz - s.bz < 90 && s.bz - wz < 30;   // and only animate while near
+    });
     blinkAviation(elapsed);
     finale.update(elapsed, 1);
     ambient.update(dt, { cam: camera.position, pixelRatio: renderer.getPixelRatio() });
